@@ -44,16 +44,9 @@ extern "C" {
  */
 int flash_device_base(uint8_t fd_id, uintptr_t *ret);
 
-int flash_area_id_from_image_slot(int slot);
-int flash_area_id_from_multi_image_slot(int image_index, int slot);
-
-/**
- * Converts the specified flash area ID to an image slot index.
- *
- * Returns image slot index (0 or 1), or -1 if ID doesn't correspond to an image
- * slot.
- */
-int flash_area_id_to_image_slot(int area_id);
+const struct flash_area *flash_area_from_image_slot(int slot);
+const struct flash_area *flash_area_from_multi_image_slot(int image_index,
+    int slot);
 
 /**
  * Converts the specified flash area ID and image index (in multi-image setup)
@@ -63,12 +56,28 @@ int flash_area_id_to_image_slot(int area_id);
  * slot.
  */
 int flash_area_id_to_multi_image_slot(int image_index, int area_id);
+int flash_area_to_multi_image_slot(int image_index, const struct flash_area *fa);
 
 /* Retrieve the flash sector a given offset belongs to.
  *
  * Returns 0 on success, or an error code on failure.
  */
 int flash_area_sector_from_off(off_t off, struct flash_sector *sector);
+
+/* Get sectors for given flash_area object. This function is similar to
+ * flash_area_get_sectors but takes flash_area object pointer instead
+ * of flash area identifier.
+ *
+ * @param fa    pointer to flash_area object.
+ * @param count in: size of array for returned sectors, out: number
+ *              of sectors filled in.
+ * @param ret   array of sectors.
+ *
+ * Returns 0 on success, -ERANGE when there is not enough space in
+ * @p ret for sector information; other negative errno code.
+ */
+int flash_area_get_sectors_fa(const struct flash_area *fa, uint32_t *count,
+                              struct flash_sector *ret);
 
 static inline uint32_t flash_area_get_off(const struct flash_area *fa)
 {
