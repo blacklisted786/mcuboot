@@ -33,6 +33,9 @@ else
     CMAKE_FIH_LEVEL="-DMCUBOOT_FIH_PROFILE=\"$FIH_LEVEL\""
 fi
 
+# Install imgtool dependencies
+pip install -r $MCUBOOT_PATH/scripts/requirements.txt
+
 # build TF-M with MCUBoot
 mkdir -p $TFM_BUILD_DIR
 cd $TFM_DIR
